@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Suicide Visualization</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+</head>
+<body>
+    <!-- <select id="yearSelector"></select> -->
+    <input type="range" id="yearSelector" min="1985" max="2016" value="1985" step="1">
+    <span id="yearDisplay">1985</span> <!-- Display the selected year -->
+    <svg width="960" height="600"></svg>
+    <div id="info" style="color: black;"></div>
+    <script>
+        var width = 960, height = 600;
+        var projection = d3.geoMercator()
+            .scale(150)
+            .translate([width / 2, height / 1.5]);
+        var path = d3.geoPath().projection(projection);
+        var svg = d3.select("svg");
+
+        Promise.all([
+            d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json'),
+            d3.json('suicide-data.json') // Ensure this path is correct
+        ]).then(function([world, data]) {
+            var countries = topojson.feature(world, world.objects.countries).features;
+
+            var yearData = new Map();
+            data.forEach(d => {
+                if (!yearData.has(d.year)) {
+                    yearData.set(d.year, new Map());
+                }
+                var countryData = yearData.get(d.year);
+                if (countryData.has(d.country)) {
+                    countryData.get(d.country).suicides += d['suicides_no'];
+                    countryData.get(d.country).population += d['population'];
+                } else {
+                    countryData.set(d.country, {
+                        suicides: d['suicides_no'],
+                        population: d['population']
+                    });
+                }
+            });
+
+            // Populate year selector
+            // d3.select("#yearSelector")
+            //     .selectAll("option")
+            //     .data([...yearData.keys()].sort())
+            //     .enter()
+            //     .append("option")
+            //     .text(d => d);
+
+            var colorScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range(["#add8e6", "#00008b"]);
+
+            function updateMap(year) {
+                var suicideData = yearData.get(parseInt(year));
+                svg.selectAll(".country")
+                    .data(countries)
+                    .join("path")
+                    .attr("class", "country")
+                    .attr("d", path)
+                    .attr("fill", function(d) {
+                        if (suicideData && suicideData.has(d.properties.name)) { // Check if data for year and country exists
+                            var data = suicideData.get(d.properties.name);
+                            var rate = data.suicides / data.population * 100000;
+                            return colorScale(rate);
+                        }
+                        return "#ccc"; // Grey color for countries without data or for undefined year data
+                    })
+                    .on("click", function(event, d) {
+                        if (suicideData && suicideData.has(d.properties.name)) { // Check if data for year and country exists
+                            var data = suicideData.get(d.properties.name);
+                            var rate = data.suicides / data.population * 100000;
+                            d3.select("#info").html(`Country: ${d.properties.name} <br/> Suicides/100k pop: ${rate.toFixed(2)}`);
+                        } else {
+                            d3.select("#info").html(`Country: ${d.properties.name} <br/> No data available`);
+                        }
+                    });
+            }
+
+            // Event listener for year selection
+            // d3.select("#yearSelector").on("change", function() {
+            //     updateMap(this.value);
+            // });
+            d3.select("#yearSelector").on("input", function() {
+                updateMap(this.value);
+                d3.select("#yearDisplay").text(this.value); // Update the displayed year
+            });
+
+            // Initialize the map with the first available year
+            updateMap(d3.select("#yearSelector").property("value"));
+        });
+    </script>
+</body>
+</html>
