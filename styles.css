@@ -1,0 +1,139 @@
+body {
+    /* font-family: 'Arial', sans-serif; */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.page-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #667fc1;
+    color: white;
+    padding: 20px 0;
+}
+
+.filter-toggle {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.filter-toggle label {
+    font-size: 25px;
+}
+
+#yearFilterToggle {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+}
+
+#yearFilterToggle:hover {
+    cursor: pointer;
+}
+
+
+#yearSelector {
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+#yearSelector:disabled {
+    cursor: default;
+}
+
+#yearDisplay {
+    font-size: 25px;
+}
+
+.year-selector {
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px auto;
+    width: 98%;
+}
+
+.map-container {
+    display: block; /* Aligns side by side with the legend */
+    margin: 10px auto; /* Center the chart horizontally */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 960px;
+    height: 600px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    position: relative; /* Needed for aspect ratio control */
+    overflow: hidden; /* Keeps everything neat */
+}
+
+.chart-container {
+    margin: 10px auto; /* Center the chart horizontally */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 960px; /* Set fixed width */
+    width: calc(50% - 20px); /* Each container takes half the width of its parent minus margins */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    position: relative; /* Needed for aspect ratio control */
+    overflow: hidden; /* Keeps everything neat */
+}
+
+.chart-container::before {
+    content: "";
+    display: block;
+    padding-top: 62.5%; /* 600 / 960 = 0.625 or 62.5% */
+}
+
+.full-width {
+    width: 100%;
+}
+
+svg {
+    position: absolute; /* Absolute positioning within the relative container */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+input[type="range"], input[type="checkbox"] {
+    margin-top: 10px;
+    vertical-align: middle;
+}
+
+#map {
+    max-height: 600px; /* Maximum height for the map */
+}
+
+#info {
+    color: #666;
+    font-size: 14px;
+    padding: 10px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .map-container {
+        width: calc(100% - 20px); /* Makes each chart full width on smaller screens */
+    }
+    .chart-container {
+        width: calc(100% - 20px); /* Makes each chart full width on smaller screens */
+    }
+}

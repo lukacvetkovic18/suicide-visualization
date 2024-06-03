@@ -7,7 +7,9 @@ var projection = d3.geoMercator()
     .scale(150)
     .translate([width / 2, height / 1.5]);
 var path = d3.geoPath().projection(projection);
-var svg = d3.select("svg");
+var svg = d3.select("#map")
+    .attr("viewBox", `0 0 ${width} ${height}`) // Allows responsive scaling
+    .attr("preserveAspectRatio", "xMidYMid meet"); // Keeps the map centered
 
 Promise.all([
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json'),
@@ -64,6 +66,32 @@ Promise.all([
                 }
                 return "#ccc"; // Grey color for countries without data or for undefined year data
             })
+            .on("mouseover", function(event, d) {
+                var countryName = d.properties.name;
+                var rate = 0;
+                if (yearFilterEnabled && suicideData && suicideData.has(countryName)) {
+                    var data = suicideData.get(countryName);
+                    rate = data.suicides / data.population * 100000;
+                } else if (!yearFilterEnabled) {
+                    var allYearsData = Array.from(yearData.values()).reduce((acc, yearData) => {
+                        if (yearData.has(countryName)) {
+                            var data = yearData.get(countryName);
+                            acc.suicides += data.suicides;
+                            acc.population += data.population;
+                        }
+                        return acc;
+                    }, {suicides: 0, population: 0});
+                    if (allYearsData.population > 0) {
+                        rate = allYearsData.suicides / allYearsData.population * 100000;
+                    }
+                }
+                d3.select("#countryName").text(countryName);
+                d3.select("#suicideRate").text(`Suicide Rate: ${rate.toFixed(2)} per 100,000`);
+            })
+            .on("mouseout", function(event, d) {
+                d3.select("#countryName").text("");
+                d3.select("#suicideRate").text("");
+            })
             .on("click", function(event, d) {
                 if (selectedCountry === d.properties.name && zoomed) {
                     selectedCountry = null;
@@ -74,6 +102,7 @@ Promise.all([
                         updateChartsWithoutYearFilter(data);
                     }
                     d3.select("#countryName").text("");
+                    d3.select("#suicideRate").text("");
                     svg.transition().duration(750).call(
                         zoom.transform,
                         d3.zoomIdentity,
@@ -104,46 +133,40 @@ Promise.all([
     }
 
     function updateCharts(data, year, country) {
-        d3.select("#suicidesTrendChart").style("display", "none");
-        d3.select("#suicidesGenderYearChart").style("display", "none");
+        d3.select("#suicidesTrendChart-container").style("display", "none");
+        d3.select("#suicidesGenderYearChart-container").style("display", "none");
         if (country) {
             updateSuicidesGenderChart(data.filter(d => d.country === country), year);
             updateSuicidesAgeGroupChart(data.filter(d => d.country === country), year);
             updateSuicidesGenerationChart(data.filter(d => d.country === country), year);
-            // Hide GDP chart for single country view
-            d3.select("#suicidesGdpChart").style("display", "none");
-            // updateSuicidesGdpChart(data, year);
+            d3.select("#suicidesCountryChart-container").style("display", "none");
         } else {
             updateSuicidesGenderChart(data, year);
             updateSuicidesAgeGroupChart(data, year);
             updateSuicidesGenerationChart(data, year);
-            // Show GDP chart for all countries view
-            d3.select("#suicidesGdpChart").style("display", "inline-block");
-            updateSuicidesGdpChart(data, year);
+            d3.select("#suicidesCountryChart-container").style("display", "inline-block");
+            updateSuicidesCountryChart(data, year);
         }
     }
 
     function updateChartsWithoutYearFilter(data, country) {
-        d3.select("#suicidesTrendChart").style("display", "inline-block");
-        d3.select("#suicidesGenderYearChart").style("display", "inline-block");
+        d3.select("#suicidesTrendChart-container").style("display", "inline-block");
+        d3.select("#suicidesGenderYearChart-container").style("display", "inline-block");
         if (country) {
             updateSuicidesGenderChart(data.filter(d => d.country === country), 1);
             updateSuicidesAgeGroupChart(data.filter(d => d.country === country), 1);
             updateSuicidesGenerationChart(data.filter(d => d.country === country), 1);
             updateSuicidesTrendChart(data.filter(d => d.country === country));
             updateSuicidesGenderYearChart(data.filter(d => d.country === country));
-            // Hide GDP chart for single country view
-            d3.select("#suicidesGdpChart").style("display", "none");
-            // updateSuicidesGdpChart(data, year);
+            d3.select("#suicidesCountryChart-container").style("display", "none");
         } else {
             updateSuicidesGenderChart(data, 1);
             updateSuicidesAgeGroupChart(data, 1);
             updateSuicidesGenerationChart(data, 1);
             updateSuicidesTrendChart(data);
             updateSuicidesGenderYearChart(data);
-            // Show GDP chart for all countries view
-            d3.select("#suicidesGdpChart").style("display", "inline-block");
-            updateSuicidesGdpChart(data, 1);
+            d3.select("#suicidesCountryChart-container").style("display", "inline-block");
+            updateSuicidesCountryChart(data, 1);
         }
     }
 
@@ -167,7 +190,6 @@ Promise.all([
 
     d3.select("#yearFilterToggle").on("change", function() {
         yearFilterEnabled = this.checked; // Update the year filter toggle flag
-        console.log(yearFilterEnabled)
         var year = d3.select("#yearSelector").property("value");
         // if (!yearFilterEnabled) {
         //     year = 1;
@@ -175,10 +197,13 @@ Promise.all([
         // updateMap(year);
         // updateCharts(data, year, selectedCountry);
         if (yearFilterEnabled) {
+            d3.select("#yearSelector").attr("disabled", null); // Remove the disabled attribute
+            var year = d3.select("#yearSelector").property("value");
             updateMap(year);
             updateCharts(data, year, selectedCountry);
         } else {
-            updateMap(1);
+            d3.select("#yearSelector").attr("disabled", true); // Add the disabled attribute
+            updateMap(1); // Assume 1 is the default or represents 'all years'
             updateChartsWithoutYearFilter(data, selectedCountry);
         }
     });
@@ -197,6 +222,13 @@ Promise.all([
         .attr("id", "countryName")
         .attr("x", 10)
         .attr("y", 20)
+        .style("font-size", "16px")
+        .style("fill", "black");
+
+    svg.append("text")
+        .attr("id", "suicideRate")
+        .attr("x", 10)
+        .attr("y", 40)
         .style("font-size", "16px")
         .style("fill", "black");
 });

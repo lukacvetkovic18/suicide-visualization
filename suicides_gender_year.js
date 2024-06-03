@@ -2,18 +2,27 @@ var marginScatter = {top: 50, right: 20, bottom: 50, left: 70},
     widthScatter = 960 - marginScatter.left - marginScatter.right,
     heightScatter = 600 - marginScatter.top - marginScatter.bottom;
 
+var tooltipScatter = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("visibility", "hidden")
+    .style("background-color", "white")
+    .style("border", "1px solid #ccc")
+    .style("padding", "10px")
+    .style("border-radius", "4px")
+    .style("box-shadow", "0 0 10px rgba(0,0,0,0.5)");
+
 var svgScatter = d3.select("#suicidesGenderYearChart")
-    .attr("width", widthScatter + marginScatter.left + marginScatter.right)
-    .attr("height", heightScatter + marginScatter.top + marginScatter.bottom)
+    .attr("viewBox", "0 0 960 600")  // Set viewBox to enable responsive sizing
     .append("g")
     .attr("transform", "translate(" + marginScatter.left + "," + marginScatter.top + ")");
 
 var xScatter = d3.scaleLinear().range([0, widthScatter]);
 var yScatter = d3.scaleLinear().range([heightScatter, 0]);
-var colorScatter = d3.scaleOrdinal().domain(["male", "female"]).range(["#1f77b4", "#ff7f0e"]);
+var colorScatter = d3.scaleOrdinal().domain(["male", "female"]).range(["#667fc1", "#c904c9"]);
 
 var xAxisScatter = d3.axisBottom(xScatter);
-var yAxisScatter = d3.axisLeft(yScatter);
+var yAxisScatter = d3.axisLeft(yScatter).tickFormat(d3.format(".0f"));
 
 svgScatter.append("g")
     .attr("class", "x axis")
@@ -28,7 +37,24 @@ svgScatter.append("text")
     .attr("text-anchor", "middle")  
     .style("font-size", "16px") 
     .style("text-decoration", "underline")  
-    .text("No. of Suicides Each Year Among Men & Women");
+    .text("Number of Suicides Each Year Among Men & Women");
+
+svgScatter.append("text")
+    .attr("class", "x-axis-label")
+    .attr("x", widthScatter / 2)
+    .attr("y", heightScatter + marginScatter.bottom - 10)
+    .attr("text-anchor", "middle")
+    .style("font-size", "14px")
+    .text("Number of Suicides");
+
+svgScatter.append("text")
+    .attr("class", "y-axis-label")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -heightScatter / 2)
+    .attr("y", -marginScatter.left + 20)
+    .attr("text-anchor", "middle")
+    .style("font-size", "14px")
+    .text("Year");
 
 var legendScatter = svgScatter.selectAll(".legend")
     .data(colorScatter.domain())
@@ -60,7 +86,7 @@ function updateSuicidesGenderYearChart(data) {
         .attr("x", widthScatter)
         .attr("y", -6)
         .style("text-anchor", "end")
-        .text("No. of Suicides");
+        .text("Number of Suicides");
 
     svgScatter.select(".y.axis")
         .call(yAxisScatter)
@@ -83,7 +109,20 @@ function updateSuicidesGenderYearChart(data) {
         .attr("cy", function(d) { return yScatter(d.year); })
         .style("fill", function(d) { return colorScatter(d.sex); })
         .style("opacity", 0.6)
-        .style("stroke", "black");
+        .style("stroke", "black")
+        .on("mouseover", function(event, d) {
+            tooltipScatter.style("visibility", "visible")
+                .html(`Year: ${d.year}<br>Suicides: ${d.suicides_no}<br>Sex: ${d.sex}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px");
+        })
+        .on("mousemove", function(event) {
+            tooltipScatter.style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px");
+        })
+        .on("mouseout", function() {
+            tooltipScatter.style("visibility", "hidden");
+        });
 
     dots.exit().remove();
 }

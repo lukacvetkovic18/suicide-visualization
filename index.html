@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Suicide Visualization</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-header">
+        <h1>Suicide Rates Overview 1985 to 2016</h1>
+        <div class="filter-toggle">
+            <input type="checkbox" id="yearFilterToggle">
+            <label for="yearFilterToggle">Filter by Year</label>
+        </div>
+        <div class="year-selector">
+            <input type="range" id="yearSelector" min="1985" max="2016" value="1985" step="1" disabled>
+            <span id="yearDisplay">1985</span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="map-container">
+            <svg id="map"></svg>
+        </div>
+        <div class="chart-container" id="suicidesGenderChart-container">
+            <svg id="suicidesGenderChart"></svg>
+        </div>
+        <div class="chart-container" id="suicidesAgeGroupChart-container">
+            <svg id="suicidesAgeGroupChart"></svg>
+        </div>
+        <div class="chart-container" id="suicidesCountryChart-container">
+            <svg id="suicidesCountryChart"></svg>
+        </div>
+        <div class="chart-container" id="suicidesGenerationChart-container">
+            <svg id="suicidesGenerationChart"></svg>
+        </div>
+        <div class="chart-container" id="suicidesTrendChart-container">
+            <svg id="suicidesTrendChart"></svg>
+        </div>
+        <div class="chart-container" id="suicidesGenderYearChart-container">
+            <svg id="suicidesGenderYearChart"></svg>
+        </div>
+    </div>
+    <div id="info"></div>
+    <script src="main.js"></script>
+    <script src="suicides_gender.js"></script>
+    <script src="suicides_age_group.js"></script>
+    <script src="suicides_country.js"></script>
+    <script src="suicides_generation.js"></script>
+    <script src="suicides_trend.js"></script>
+    <script src="suicides_gender_year.js"></script>
+</body>
+</html>
