@@ -13,7 +13,7 @@ var tooltipGeneration = d3.select("body").append("div")
     .style("box-shadow", "0 0 10px rgba(0,0,0,0.5)");
 
 var svgSuicidesGeneration = d3.select("#suicidesGenerationChart")
-    .attr("viewBox", "0 0 960 600")  // Set viewBox to enable responsive sizing
+    .attr("viewBox", "0 0 960 600")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -26,7 +26,6 @@ svgSuicidesGeneration.append("g")
 svgSuicidesGeneration.append("g")
     .attr("class", "y-axis");
 
-// Add chart title
 svgSuicidesGeneration.append("text")
     .attr("class", "gen-chart-title")
     .attr("x", width / 2)
@@ -36,7 +35,6 @@ svgSuicidesGeneration.append("text")
     .style("text-decoration", "underline")
     .text("Median Suicides per Generation");
 
-// Add x-axis label
 svgSuicidesGeneration.append("text")
     .attr("class", "x-axis-label")
     .attr("x", width / 2)
@@ -45,7 +43,6 @@ svgSuicidesGeneration.append("text")
     .style("font-size", "14px")
     .text("Median Suicides");
 
-// Add y-axis label
 svgSuicidesGeneration.append("text")
     .attr("class", "y-axis-label")
     .attr("transform", "rotate(-90)")
@@ -70,7 +67,6 @@ function updateSuicidesGenerationChart(data, selectedYear) {
         };
     }, d => d.generation);
 
-    // Sort generations by median suicides
     generationData = generationData.sort((a, b) => b[1].medianSuicides - a[1].medianSuicides);
 
     xScaleSuicidesGeneration.domain([0, d3.max(generationData, d => d[1].medianSuicides)]);

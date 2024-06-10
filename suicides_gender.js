@@ -1,5 +1,5 @@
 var svgPie = d3.select("#suicidesGenderChart")
-    .attr("viewBox", "0 0 960 600")  // Set viewBox to enable responsive sizing
+    .attr("viewBox", "0 0 960 600")
     .append("g")
     .attr("transform", "translate(450,300)");
 
@@ -8,12 +8,11 @@ var colorPie = d3.scaleOrdinal()
     .domain(["female", "male"])
     .range(["#c904c9", "#667fc1"]);
 
-// Add legend
 var legend = svgPie.selectAll(".legend")
     .data(colorPie.domain())
     .enter().append("g")
     .attr("class", "legend")
-    .attr("transform", function(d, i) { return "translate(200," + (i * 20 - 180) + ")"; }); // Adjust position as needed
+    .attr("transform", function(d, i) { return "translate(200," + (i * 20 - 180) + ")"; });
 
 legend.append("rect")
     .attr("x", 200)
@@ -60,13 +59,12 @@ function updateSuicidesGenderChart(data, year) {
         .attr("transform", d => `translate(${arc.centroid(d)})`)
         .attr("text-anchor", "middle")
         .attr("font-size", "16px")
-        .attr("fill", "white") // Set text color to white
+        .attr("fill", "white")
         .text(d => `${((d.data[1] / d3.sum(sexData, d => d[1])) * 100).toFixed(1)}%`);
         
-    // Add chart title
     svgPie.append("text")
         .attr("x", 0)
-        .attr("y", -275) // Adjust as needed
+        .attr("y", -275)
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
         .style("text-decoration", "underline")

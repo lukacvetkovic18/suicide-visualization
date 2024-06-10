@@ -1,5 +1,4 @@
 body {
-    /* font-family: 'Arial', sans-serif; */
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -63,8 +62,8 @@ body {
 }
 
 .map-container {
-    display: block; /* Aligns side by side with the legend */
-    margin: 10px auto; /* Center the chart horizontally */
+    display: block;
+    margin: 10px auto;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -73,32 +72,32 @@ body {
     height: 600px;
     box-sizing: border-box;
     display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
-    position: relative; /* Needed for aspect ratio control */
-    overflow: hidden; /* Keeps everything neat */
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .chart-container {
-    margin: 10px auto; /* Center the chart horizontally */
+    margin: 10px auto;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     padding: 20px;
-    width: 960px; /* Set fixed width */
-    width: calc(50% - 20px); /* Each container takes half the width of its parent minus margins */
+    width: 960px;
+    width: calc(50% - 20px);
     box-sizing: border-box;
     display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
-    position: relative; /* Needed for aspect ratio control */
-    overflow: hidden; /* Keeps everything neat */
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .chart-container::before {
     content: "";
     display: block;
-    padding-top: 62.5%; /* 600 / 960 = 0.625 or 62.5% */
+    padding-top: 62.5%;
 }
 
 .full-width {
@@ -106,7 +105,7 @@ body {
 }
 
 svg {
-    position: absolute; /* Absolute positioning within the relative container */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -119,7 +118,7 @@ input[type="range"], input[type="checkbox"] {
 }
 
 #map {
-    max-height: 600px; /* Maximum height for the map */
+    max-height: 600px;
 }
 
 #info {
@@ -131,9 +130,9 @@ input[type="range"], input[type="checkbox"] {
 
 @media (max-width: 768px) {
     .map-container {
-        width: calc(100% - 20px); /* Makes each chart full width on smaller screens */
+        width: calc(100% - 20px);
     }
     .chart-container {
-        width: calc(100% - 20px); /* Makes each chart full width on smaller screens */
+        width: calc(100% - 20px);
     }
 }

@@ -13,7 +13,7 @@ var svg = d3.select("#map")
 
 Promise.all([
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json'),
-    d3.json('suicide-data.json') // Ensure this path is correct
+    d3.json('suicide-data.json')
 ]).then(function([world, data]) {
     var countries = topojson.feature(world, world.objects.countries).features;
     
@@ -64,7 +64,7 @@ Promise.all([
                         return colorScale(rate);
                     }
                 }
-                return "#ccc"; // Grey color for countries without data or for undefined year data
+                return "#ccc";
             })
             .on("mouseover", function(event, d) {
                 var countryName = d.properties.name;
@@ -97,7 +97,7 @@ Promise.all([
                     selectedCountry = null;
                     zoomed = false;
                     if(yearFilterEnabled) {
-                        updateCharts(data, year); // Update charts for all countries
+                        updateCharts(data, year);
                     } else {
                         updateChartsWithoutYearFilter(data);
                     }
@@ -112,7 +112,7 @@ Promise.all([
                     selectedCountry = d.properties.name;
                     zoomed = true;
                     if(yearFilterEnabled) {
-                        updateCharts(data, year, selectedCountry); // Update charts for the selected country
+                        updateCharts(data, year, selectedCountry);
                     } else {
                         updateChartsWithoutYearFilter(data, selectedCountry);
                     }
@@ -170,9 +170,7 @@ Promise.all([
         }
     }
 
-    // Call updateMap to initially render the map
     updateMap(d3.select("#yearSelector").property("value"));
-    // Call the updateCharts function initially to initialize all charts
     if (yearFilterEnabled) {
         updateCharts(data, d3.select("#yearSelector").property("value"));
     } else {
@@ -191,11 +189,6 @@ Promise.all([
     d3.select("#yearFilterToggle").on("change", function() {
         yearFilterEnabled = this.checked; // Update the year filter toggle flag
         var year = d3.select("#yearSelector").property("value");
-        // if (!yearFilterEnabled) {
-        //     year = 1;
-        // }
-        // updateMap(year);
-        // updateCharts(data, year, selectedCountry);
         if (yearFilterEnabled) {
             d3.select("#yearSelector").attr("disabled", null); // Remove the disabled attribute
             var year = d3.select("#yearSelector").property("value");
@@ -203,7 +196,7 @@ Promise.all([
             updateCharts(data, year, selectedCountry);
         } else {
             d3.select("#yearSelector").attr("disabled", true); // Add the disabled attribute
-            updateMap(1); // Assume 1 is the default or represents 'all years'
+            updateMap(1);
             updateChartsWithoutYearFilter(data, selectedCountry);
         }
     });

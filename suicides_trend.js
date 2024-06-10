@@ -225,14 +225,14 @@ function updateSuicidesTrendChart(data) {
     sizeValues.forEach((d, i) => {
         legendSize.append("circle")
             .attr("cx", 0)
-            .attr("cy", -(i * 2 * size(d) + (i * 10))) // Added spacing between circles
+            .attr("cy", -(i * 2 * size(d) + (i * 10)))
             .attr("r", size(d))
             .style("fill", "none")
             .style("stroke", "black");
 
         legendSize.append("text")
-            .attr("x", 30) // Increased horizontal spacing between circles and text
-            .attr("y", -(i * 2 * size(d) + (i * 10))) // Match y position with circle
+            .attr("x", 30)
+            .attr("y", -(i * 2 * size(d) + (i * 10)))
             .attr("dy", ".35em")
             .style("text-anchor", "start")
             .text(d);

@@ -13,7 +13,7 @@ var tooltipScatter = d3.select("body").append("div")
     .style("box-shadow", "0 0 10px rgba(0,0,0,0.5)");
 
 var svgScatter = d3.select("#suicidesGenderYearChart")
-    .attr("viewBox", "0 0 960 600")  // Set viewBox to enable responsive sizing
+    .attr("viewBox", "0 0 960 600")
     .append("g")
     .attr("transform", "translate(" + marginScatter.left + "," + marginScatter.top + ")");
 

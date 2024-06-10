@@ -2,7 +2,6 @@ var margin = { top: 40, right: 40, bottom: 60, left: 70 },
     width = 960 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
-// Tooltip element
 var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
@@ -14,7 +13,7 @@ var tooltip = d3.select("body").append("div")
     .style("box-shadow", "0 0 10px rgba(0,0,0,0.5)");
 
 var svgBar = d3.select("#suicidesAgeGroupChart")
-    .attr("viewBox", "0 0 960 600")  // Set viewBox to enable responsive sizing
+    .attr("viewBox", "0 0 960 600")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

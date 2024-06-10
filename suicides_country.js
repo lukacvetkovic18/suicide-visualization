@@ -13,7 +13,7 @@ var tooltipCountry = d3.select("body").append("div")
     .style("box-shadow", "0 0 10px rgba(0,0,0,0.5)");
 
 var svgSuicidesGdp = d3.select("#suicidesCountryChart")
-    .attr("viewBox", "0 0 960 600")  // Set viewBox to enable responsive sizing
+    .attr("viewBox", "0 0 960 600")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -22,7 +22,7 @@ var yScaleSuicidesGdp = d3.scaleBand().range([0, height]).padding(0.1);
 
 svgSuicidesGdp.append("g")
     .attr("class", "x-axis")
-    .attr("transform", "translate(0," + height + ")"); // Ensure the x-axis group is transformed correctly
+    .attr("transform", "translate(0," + height + ")");
 
 svgSuicidesGdp.append("g")
     .attr("class", "y-axis");
@@ -104,7 +104,6 @@ function updateSuicidesCountryChart(data, selectedYear) {
     bars.exit().remove();
 
     svgSuicidesGdp.select(".x-axis")
-        // .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(xScaleSuicidesGdp));
 
     svgSuicidesGdp.select(".y-axis")
