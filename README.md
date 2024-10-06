@@ -1,6 +1,6 @@
 <div id="top"></div>
 <div align="center">
-<h3 align="center">>Suicide Visualization</h3>
+<h3 align="center">Suicide Visualization</h3>
 
   <p align="center">
     This project analyzes and visualizes global suicide rates from 1985 to 2016 using data from the World Health Organization (WHO) and other sources. The goal is to identify patterns and trends related to demographic and socioeconomic factors.
